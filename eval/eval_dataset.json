@@ -1,0 +1,92 @@
+[
+  {
+    "question": "What online facilities are provided to customers through the bank's Internet Banking service?",
+    "source": "E-SERVICES_Provided_By_Banks.pdf",
+    "page": 10,
+    "synthetic": true
+  },
+  {
+    "question": "What was the CASA ratio for the bank in March 2026?",
+    "source": "q1fy27-earnings-presentation.pdf",
+    "page": 14,
+    "synthetic": true
+  },
+  {
+    "question": "What was the change in the overall SMA ratio from 30.06.25 to 30.06.26?",
+    "source": "Investorpresentation30062026_BOI.pdf",
+    "page": 31,
+    "synthetic": true
+  },
+  {
+    "question": "What is the date of the quarter for which Union Bank of India submitted its unaudited consolidated financial results?",
+    "source": "financial-results-june-30-2026_union bank.pdf",
+    "page": 15,
+    "synthetic": true
+  },
+  {
+    "question": "What is the NIL Security Cover certificate date for non-convertible debt securities as reported by the Statutory Central Auditors?",
+    "source": "financial-results-june-30-2026_union bank.pdf",
+    "page": 1,
+    "synthetic": true
+  },
+  {
+    "question": "What was the total income for the quarter ended June 30, 2026, on a standalone basis?",
+    "source": "Boardresults30062026_BOI.pdf",
+    "page": 3,
+    "synthetic": true
+  },
+  {
+    "question": "What amount did the bank report as fraud cases during the quarter ending June 30, 2026?",
+    "source": "financial-results-june-30-2026_union bank.pdf",
+    "page": 8,
+    "synthetic": true
+  },
+  {
+    "question": "What was the CET-1 capital ratio for the bank as of June 30, 2026?",
+    "source": "Investorpresentation30062026_BOI.pdf",
+    "page": 36,
+    "synthetic": true
+  },
+  {
+    "question": "What was the percentage change in shareholding for the Life Insurance Corp from 31.03.26 to 30.06.26?",
+    "source": "Investorpresentation30062026_BOI.pdf",
+    "page": 37,
+    "synthetic": true
+  },
+  {
+    "question": "What is the projected growth rate for global advances as of 31.03.2027?",
+    "source": "Investors Presentation- Jun.26_CANARA BANK.pdf",
+    "page": 44,
+    "synthetic": true
+  },
+  {
+    "question": "What specific disclosures are being made by the bank in accordance with SEBI regulations?",
+    "source": "financial-results-june-30-2026_union bank.pdf",
+    "page": 1,
+    "synthetic": true
+  },
+  {
+    "question": "What was the net segment revenue for Retail Banking Operations for the quarter ended 30.06.2026?",
+    "source": "Boardresults30062026_BOI.pdf",
+    "page": 5,
+    "synthetic": true
+  },
+  {
+    "question": "What were the unaudited consolidated financial results of Bank of India for the quarter ended June 30, 2026?",
+    "source": "Boardresults30062026_BOI.pdf",
+    "page": 18,
+    "synthetic": true
+  },
+  {
+    "question": "What is the total amount of listed debt securities issued by the Union Bank of India as of 30th June, 2026?",
+    "source": "financial-results-june-30-2026_union bank.pdf",
+    "page": 23,
+    "synthetic": true
+  },
+  {
+    "question": "What disclosures related to consolidated Pillar 3 are mentioned in the bank's report as of June 30, 2026?",
+    "source": "Boardresults30062026_BOI.pdf",
+    "page": 19,
+    "synthetic": true
+  }
+]
