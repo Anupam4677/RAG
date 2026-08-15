@@ -59,7 +59,9 @@ class RAGChain:
         """Call after re-ingestion so BM25's index picks up new documents."""
         self.retriever = build_hybrid_retriever()
 
-    def answer(self, question: str, history: list[tuple[str, str]] | None = None) -> RAGAnswer:
+    def _build_messages_and_sources(
+        self, question: str, history: list[tuple[str, str]] | None = None
+    ) -> tuple[list[dict], list[dict]]:
         docs = self.retriever.invoke(question)
         context = _format_context(docs)
 
@@ -74,7 +76,6 @@ class RAGChain:
             }
         )
 
-        response = self.llm.invoke(messages)
         sources = [
             {
                 "source": d.metadata.get("source"),
@@ -85,7 +86,25 @@ class RAGChain:
             }
             for d in docs
         ]
+        return messages, sources
+
+    def answer(self, question: str, history: list[tuple[str, str]] | None = None) -> RAGAnswer:
+        messages, sources = self._build_messages_and_sources(question, history)
+        response = self.llm.invoke(messages)
         return RAGAnswer(answer=response.content, sources=sources)
+
+    def stream_answer(self, question: str, history: list[tuple[str, str]] | None = None):
+        """Yield (partial_answer_text, sources) as tokens arrive from the LLM.
+
+        `sources` is the same list on every yield (retrieval happens once,
+        before generation starts) - only `partial_answer_text` grows.
+        """
+        messages, sources = self._build_messages_and_sources(question, history)
+        partial = ""
+        for chunk in self.llm.stream(messages):
+            if chunk.content:
+                partial += chunk.content
+                yield partial, sources
 
 
 _chain: RAGChain | None = None

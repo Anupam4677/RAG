@@ -27,16 +27,19 @@ def chat_fn(message: str, history: list[dict]):
         if history[i]["role"] == "user" and history[i + 1]["role"] == "assistant":
             pairs.append((history[i]["content"], history[i + 1]["content"]))
 
-    result = chain.answer(message, pairs)
+    partial_answer = ""
+    sources = []
+    for partial_answer, sources in chain.stream_answer(message, pairs):
+        yield partial_answer
 
     sources_md = "\n\n**Sources retrieved:**\n"
-    for s in result.sources:
+    for s in sources:
         sources_md += (
             f"- `{s['source']}` p.{s['page']} "
             f"({s['content_type']}, section: {s['section'] or 'N/A'}) — "
             f"_{s['snippet'].strip()}..._\n"
         )
-    return result.answer + sources_md
+    yield partial_answer + sources_md
 
 
 def ingest_fn(progress=gr.Progress()):
