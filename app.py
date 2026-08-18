@@ -81,7 +81,7 @@ def load_latest_eval_fn():
     return summary_df, rows_df, json.dumps(result["summary"], indent=2)
 
 
-with gr.Blocks(title="Bank Reports RAG") as demo:
+with gr.Blocks(title="Bank Reports RAG", theme=gr.themes.Default(primary_hue="blue")) as demo:
     gr.Markdown("# 🏦 Bank Annual Reports — RAG Assistant")
     gr.Markdown(
         "Ask questions about the bank annual reports, investor presentations, "
