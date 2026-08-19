@@ -6,5 +6,6 @@ chroma_db/
 .image_cache/
 eval/results/*.json
 eval/results/*.csv
+eval/latency_results/*.csv
 *.log
 .claude/
