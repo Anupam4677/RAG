@@ -66,7 +66,8 @@ src/evaluation.py — Hit Rate, Precision/Recall@k, MRR, NDCG, mean embedding
 
 ```
 RAG/
-├── .env                      # API keys (OPENAI_API_KEY required)
+├── .env                      # API keys + operational config overrides (see .env.example)
+├── .env.example               # documents every supported override, with defaults
 ├── requirements.txt
 ├── data_pdf_files/            # source PDFs (bank annual reports etc.)
 ├── chroma_db/                  # persisted vector store (created at runtime)

@@ -23,6 +23,11 @@ Create/confirm a `.env` file in `RAG/` with at least:
 OPENAI_API_KEY=sk-...
 ```
 
+All other operational parameters (chunk sizes, retrieval top-k, HNSW index
+settings, model names, reranker toggle, etc.) have working defaults in
+`src/config.py` and can be overridden from `.env` without touching code —
+see `.env.example` for the full list of supported variables.
+
 (LangSmith tracing, Tavily, email/Pushover keys are optional and only used if
 you wire in those integrations yourself — they are not required to run this
 system.)
@@ -57,8 +62,8 @@ Notes:
   after the first run.
 - Expect a large investor-presentation PDF (many pages/charts) to take
   several minutes on first ingestion because of the vision-captioning calls.
-- Set `CAPTION_IMAGES = False` in `src/config.py` to skip image captioning
-  entirely (faster, no chart/image content indexed).
+- Set `CAPTION_IMAGES=false` in `.env` to skip image captioning entirely
+  (faster, no chart/image content indexed).
 
 ## 4. Ask questions (Gradio UI)
 
@@ -94,8 +99,8 @@ python -m src.evaluation
   what question each one answers, then saved to that file.
 - Results are saved to `eval/results/<timestamp>.json` / `.csv` and mirrored
   to `eval/results/latest.json` / `.csv`.
-- To evaluate with a different top-k: edit the `k` argument in
-  `evaluate_retrieval(k=5)` (or use the Evaluation tab's slider in the UI).
+- To evaluate with a different top-k: use the Evaluation tab's slider in the
+  UI, or pass `k=` to `evaluate_retrieval()` directly.
 
 ### Writing your own eval questions
 
@@ -114,9 +119,9 @@ than the synthetic bootstrap set — swap them in as soon as you have them.
 
 ## 6. Re-indexing after changing the embedding model
 
-If you change `EMBEDDING_MODEL` or `EMBEDDING_DIMENSIONS` in `src/config.py`,
-you **must** wipe and rebuild the vector store — old and new vectors are not
-comparable:
+If you change `EMBEDDING_MODEL` or `EMBEDDING_DIMENSIONS` (in `.env` or
+`src/config.py`), you **must** wipe and rebuild the vector store — old and
+new vectors are not comparable:
 
 ```powershell
 # stop any running app.py first, then:
@@ -129,7 +134,7 @@ python -m src.ingest
 | Symptom | Likely cause / fix |
 |---|---|
 | `OPENAI_API_KEY` errors | Confirm `.env` is in `RAG/` (not a subfolder) and has no quotes/spaces around the key. |
-| Ingestion very slow on first run | Vision captioning of every chart; set `CAPTION_IMAGES = False` in `src/config.py` for a text/table-only faster pass. |
+| Ingestion very slow on first run | Vision captioning of every chart; set `CAPTION_IMAGES=false` in `.env` for a text/table-only faster pass. |
 | Retrieval returns nothing | Vector store is empty — run `python -m src.ingest` first. |
 | Chat answers say "not in context" for something you know is in a PDF | Re-check the PDF was ingested (`python -m src.ingest --files <file>`), or the section is a chart-only page and `CAPTION_IMAGES` was off during ingestion. |
 | `sentence-transformers`/reranker download is slow the first time | The cross-encoder model (`ms-marco-MiniLM-L-6-v2`) downloads from Hugging Face on first use and is cached under `~/.cache/huggingface` afterward. |
