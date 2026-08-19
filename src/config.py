@@ -17,9 +17,10 @@ CHROMA_DIR = ROOT_DIR / "chroma_db"
 EVAL_DIR = ROOT_DIR / "eval"
 EVAL_RESULTS_DIR = EVAL_DIR / "results"
 EVAL_DATASET_PATH = EVAL_DIR / "eval_dataset.json"
+LATENCY_RESULTS_DIR = EVAL_DIR / "latency_results"
 IMAGE_CACHE_DIR = ROOT_DIR / ".image_cache"
 
-for d in (CHROMA_DIR, EVAL_RESULTS_DIR, IMAGE_CACHE_DIR):
+for d in (CHROMA_DIR, EVAL_RESULTS_DIR, LATENCY_RESULTS_DIR, IMAGE_CACHE_DIR):
     d.mkdir(parents=True, exist_ok=True)
 
 # --- Models --------------------------------------------------------------

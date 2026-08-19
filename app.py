@@ -81,6 +81,30 @@ def load_latest_eval_fn():
     return summary_df, rows_df, json.dumps(result["summary"], indent=2)
 
 
+def latency_profile_fn(n_questions: int, progress=gr.Progress()):
+    from src.latency_profiler import load_profile_questions, run_latency_profile
+
+    questions = load_profile_questions()[: int(n_questions)]
+    progress((0, 1), desc=f"Profiling {len(questions)} questions...")
+    df = run_latency_profile(questions)
+    progress((1, 1), desc="Done")
+
+    stage_cols = [c for c in df.columns if c.endswith("_ms")]
+    summary_df = df[stage_cols].mean().to_frame(name="mean_ms").reset_index(names="stage") if len(df) else pd.DataFrame()
+    return summary_df, df
+
+
+def load_latest_latency_fn():
+    from src.latency_profiler import load_latest_results
+
+    df = load_latest_results()
+    if df is None or df.empty:
+        return pd.DataFrame(), pd.DataFrame()
+    stage_cols = [c for c in df.columns if c.endswith("_ms")]
+    summary_df = df[stage_cols].mean().to_frame(name="mean_ms").reset_index(names="stage")
+    return summary_df, df
+
+
 with gr.Blocks(title="Bank Reports RAG") as demo:
     gr.Markdown("# 🏦 Bank Annual Reports — RAG Assistant")
     gr.Markdown(
@@ -120,6 +144,23 @@ with gr.Blocks(title="Bank Reports RAG") as demo:
 
         run_eval_btn.click(fn=eval_fn, inputs=k_slider, outputs=[eval_summary, eval_rows, eval_json])
         load_eval_btn.click(fn=load_latest_eval_fn, outputs=[eval_summary, eval_rows, eval_json])
+
+    with gr.Tab("Latency"):
+        gr.Markdown(
+            "Breaks down end-to-end query latency into per-component stages "
+            "(query processing, embedding generation, vector search, BM25 search, "
+            "reranking, LLM time-to-first-token, LLM total generation) across a "
+            "sample of eval questions. Results are saved to `eval/latency_results/`."
+        )
+        with gr.Row():
+            n_slider = gr.Slider(1, 20, value=5, step=1, label="Number of questions to profile")
+            run_latency_btn = gr.Button("Run Latency Profile", variant="primary")
+            load_latency_btn = gr.Button("Load Latest Results")
+        latency_summary = gr.Dataframe(label="Mean latency per stage (ms)")
+        latency_rows = gr.Dataframe(label="Per-question latency breakdown")
+
+        run_latency_btn.click(fn=latency_profile_fn, inputs=n_slider, outputs=[latency_summary, latency_rows])
+        load_latency_btn.click(fn=load_latest_latency_fn, outputs=[latency_summary, latency_rows])
 
 
 if __name__ == "__main__":
