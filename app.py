@@ -70,6 +70,27 @@ def eval_fn(k: int, progress=gr.Progress()):
     return summary_df, rows_df, json.dumps(result["summary"], indent=2)
 
 
+TOOLTIP_JS = """
+() => {
+    const tooltips = {
+        "ingest-btn": "Parse, chunk, embed, and index every PDF in data_pdf_files/ into the vector store.",
+        "run-eval-btn": "Run retrieval and embedding-quality evaluation against eval/eval_dataset.json.",
+        "load-eval-btn": "Load the most recently saved evaluation results without re-running the evaluation.",
+    };
+    for (const [id, text] of Object.entries(tooltips)) {
+        const el = document.getElementById(id);
+        if (el) el.title = text;
+    }
+    // The Chat tab's send button is generated internally by gr.ChatInterface and
+    // has no elem_id we can set, so target it by its accessibility label instead.
+    const chatSubmitBtn = document.querySelector('button[aria-label="Submit"]');
+    if (chatSubmitBtn) {
+        chatSubmitBtn.title = "Send your question and get a grounded answer with source citations.";
+    }
+}
+"""
+
+
 def load_latest_eval_fn():
     from src.evaluation import load_latest_results
 
@@ -99,7 +120,7 @@ with gr.Blocks(title="Bank Reports RAG") as demo:
             "safe — chunk IDs are deterministic, so re-ingesting the same file "
             "overwrites its existing chunks instead of duplicating them."
         )
-        ingest_btn = gr.Button("Run Ingestion", variant="primary")
+        ingest_btn = gr.Button("Run Ingestion", variant="primary", elem_id="ingest-btn")
         ingest_log = gr.Textbox(label="Ingestion log", lines=20)
         ingest_btn.click(fn=ingest_fn, outputs=ingest_log)
 
@@ -112,14 +133,16 @@ with gr.Blocks(title="Bank Reports RAG") as demo:
         )
         with gr.Row():
             k_slider = gr.Slider(1, 10, value=5, step=1, label="k (top-k retrieved)")
-            run_eval_btn = gr.Button("Run Evaluation", variant="primary")
-            load_eval_btn = gr.Button("Load Latest Results")
+            run_eval_btn = gr.Button("Run Evaluation", variant="primary", elem_id="run-eval-btn")
+            load_eval_btn = gr.Button("Load Latest Results", elem_id="load-eval-btn")
         eval_summary = gr.Dataframe(label="Summary")
         eval_rows = gr.Dataframe(label="Per-question results")
         eval_json = gr.Code(label="Summary JSON", language="json")
 
         run_eval_btn.click(fn=eval_fn, inputs=k_slider, outputs=[eval_summary, eval_rows, eval_json])
         load_eval_btn.click(fn=load_latest_eval_fn, outputs=[eval_summary, eval_rows, eval_json])
+
+    demo.load(fn=None, js=TOOLTIP_JS)
 
 
 if __name__ == "__main__":
